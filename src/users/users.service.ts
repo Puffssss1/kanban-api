@@ -24,7 +24,7 @@ export class UsersService {
     return this.userRepository.update(id, updatedUser);
   }
 
-  async remove(id: string) {
+  async delete(id: string) {
     const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException(`user: ${id} not found`);

@@ -37,17 +37,19 @@ export class UsersRepository {
   }
 
   // edit user by id
-  update(
+  async update(
     id: string,
     updatedUser: { full_name?: string; email?: string; password?: string },
   ) {
-    return this.dbService.users.update({
+    const result = await this.dbService.users.update({
       where: { id: id },
       data: {
         full_name: updatedUser.full_name,
         email: updatedUser.email,
+        updated_at: new Date(),
       },
     });
+    return result;
   }
 
   // delete user by id

@@ -25,7 +25,7 @@ export class UsersController {
 
   //DELETE /user/:id (delete user by id)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  delete(@Param('id') id: string) {
+    return this.usersService.delete(id);
   }
 }
