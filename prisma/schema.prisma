@@ -1,133 +1,85 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
-// prisma/schema.prisma
 datasource db {
   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  url       = env("DATABASE_URL")
+  // directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
-/*
-Users
--
-id uuid pk 
-full_name text
-email varchar unique
-password hash
-avatar_url link
-created_at timestamptz
-updated_at timestamptz
-*/
+/// Users
+/// -
+/// id uuid pk 
+/// full_name text
+/// email varchar unique
+/// password hash
+/// avatar_url link
+/// created_at timestamptz
+/// updated_at timestamptz
 model Users {
-  id         String    @id @default(uuid())
-  full_name  String
-  email      String    @unique
-  hashed_password   String
-  avatar_url String?
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-
-  Boards      Boards[]      @relation("BoardOwner")
-  BoardMembers Board_members[]
-  TaskBoxes    Task_box[]    @relation("AssignedUser")
+  id              String          @id @default(uuid())
+  full_name       String
+  email           String          @unique
+  hashed_password String
+  avatar_url      String?
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  BoardMembers    Board_members[]
+  Boards          Boards[]        @relation("BoardOwner")
+  TaskBoxes       Task_box[]      @relation("AssignedUser")
 }
-/*
-Boards
--
-id uuid pk
-owner_id uuid fk >- Users.id
-board_name text
-created_at timestamptz
-updated_at timestamptz
-*/
-model Boards {
-  id         String    @id @default(uuid())
-  owner_id   String
-  board_name String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
 
-  owner       Users            @relation("BoardOwner", fields: [owner_id], references: [id])
+/// Boards
+/// -
+/// id uuid pk
+/// owner_id uuid fk >- Users.id
+/// board_name text
+/// created_at timestamptz
+/// updated_at timestamptz
+model Boards {
+  id           String          @id @default(uuid())
+  owner_id     String
+  board_name   String
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
   BoardMembers Board_members[]
+  owner        Users           @relation("BoardOwner", fields: [owner_id], references: [id])
   Columns      Columns[]
 }
 
-/*
-Board_members 
--
-id uuid pk
-board_id uuid fk >- Boards.id
-user_id uuid fk >- Users.id
-role text # "editor" "viewer"
-*/
-enum Role {
-  VIEWER
-  EDITOR
-}
 model Board_members {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   board_id String
   user_id  String
-  role     Role? @default(VIEWER)
-
-  board Boards @relation(fields: [board_id], references: [id])
-  user  Users  @relation(fields: [user_id], references: [id])
+  role     Role?  @default(VIEWER)
+  board    Boards @relation(fields: [board_id], references: [id])
+  user     Users  @relation(fields: [user_id], references: [id])
 
   @@unique([board_id, user_id])
 }
 
-/*
-Columns
--
-id uuid pk
-board_id uuid fk >- Boards.id
-column_title text
-description text
-position int 
-created_at timestamptz
-updated_at timestamptz
-*/
+/// Columns
+/// -
+/// id uuid pk
+/// board_id uuid fk >- Boards.id
+/// column_title text
+/// description text
+/// position int 
+/// created_at timestamptz
+/// updated_at timestamptz
 model Columns {
-  id          String     @id @default(uuid())
-  board_id    String
+  id           String     @id @default(uuid())
+  board_id     String
   column_title String
-  description String?
-  position    Int
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
-
-  board     Boards     @relation(fields: [board_id], references: [id])
-  TaskBoxes Task_box[]
+  description  String?
+  position     Int
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @updatedAt
+  board        Boards     @relation(fields: [board_id], references: [id])
+  TaskBoxes    Task_box[]
 }
 
-/*
-Task_box
--
-id uuid pk
-column_id uuid fk >- Columns.id
-assigned_to uuid fk >- Users.id null
-deadline timestamptz
-task_title text
-description text
-priority text # HIGH, LOW, ASAP
-position int 
-created_at timestamptz
-updated_at timestamptz
-*/
-enum Priority {
-  HIGH
-  LOW
-  ASAP
-}
 model Task_box {
   id          String    @id @default(uuid())
   column_id   String
@@ -135,12 +87,39 @@ model Task_box {
   deadline    DateTime?
   task_title  String
   description String?
-  priority    Priority @default(LOW)
+  priority    Priority  @default(LOW)
   position    Int
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
-
-  column Columns @relation(fields: [column_id], references: [id])
-  user   Users?  @relation("AssignedUser", fields: [assigned_to], references: [id])
+  user        Users?    @relation("AssignedUser", fields: [assigned_to], references: [id])
+  column      Columns   @relation(fields: [column_id], references: [id])
 }
 
+/// Board_members 
+/// -
+/// id uuid pk
+/// board_id uuid fk >- Boards.id
+/// user_id uuid fk >- Users.id
+/// role text # "editor" "viewer"
+enum Role {
+  VIEWER
+  EDITOR
+}
+
+/// Task_box
+/// -
+/// id uuid pk
+/// column_id uuid fk >- Columns.id
+/// assigned_to uuid fk >- Users.id null
+/// deadline timestamptz
+/// task_title text
+/// description text
+/// priority text # HIGH, LOW, ASAP
+/// position int 
+/// created_at timestamptz
+/// updated_at timestamptz
+enum Priority {
+  HIGH
+  LOW
+  ASAP
+}
