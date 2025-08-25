@@ -1,5 +1,3 @@
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-
 ## Description
 
 <!-- [UI](https://github.com/nestjs/nest) Put the UI Link here. -->
@@ -9,15 +7,23 @@
 A Trello-like Kanban board built with NestJS (API) and Next.js (UI).
 Part of my full-stack portfolio project: Full Kanban <!--[Test](https://github.com/nestjs/nest) put the deployed site -->
 
-🚀 Tech Stack
+- 🚀 Tech Stack
+  Backend (API repo):
+  - NestJS
+  - NeonDB with Prisma ORM
+  - WebSockets (Move task Realtime)
+  - Authentication (JWT, OAuth ready, Passport)
 
-Backend (API repo):
-
-NestJS
+- 🛠 Features:
+  - 🔑 User Authentication – JWT login/signup (NestJS API)
+  - 📋 Boards & Columns – Create, edit, delete
+  - ✅ Tasks – Assign users, set deadlines, priorities (HIGH, LOW, ASAP)
+  - 🔄 Real-time updates – Move tasks between columns with WebSockets
+  - 👥 Board members – Invite collaborators with roles (viewer / editor)
 
 ## Stay in touch
 
-- Author - [Budji Solano](https://www.linkedin.com/in/budji-solano/)
+- 🧑‍💻 Author - [Budji Solano](https://www.linkedin.com/in/budji-solano/)
 - Ig - [Budji Solano](https://www.instagram.com/bugbybujs/)
   <!-- - Website - [https://nestjs.com](https://nestjs.com/) -->
   <!-- - Twitter - [@nestframework](https://twitter.com/nestframework) -->
