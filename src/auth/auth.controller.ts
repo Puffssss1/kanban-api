@@ -25,4 +25,9 @@ export class AuthController {
     };
     return this.authService.login(loginCreadentials);
   }
+
+  @Post('refresh')
+  refresh(@Body() body: { refresh_token: string }) {
+    return this.authService.refresh(body.refresh_token);
+  }
 }

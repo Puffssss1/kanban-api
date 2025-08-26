@@ -6,7 +6,16 @@ export class UsersRepository {
   constructor(private dbService: DatabaseService) {}
   // find all users
   async findAll() {
-    const data = await this.dbService.users.findMany();
+    const data = await this.dbService.users.findMany({
+      select: {
+        id: true,
+        full_name: true,
+        email: true,
+        avatar_url: true,
+        created_at: true,
+        updated_at: true,
+      },
+    });
     if (!data) {
       return [];
     }
