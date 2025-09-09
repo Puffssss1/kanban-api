@@ -8,10 +8,10 @@ import {
   Delete,
   UseGuards,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { BoardsService } from './boards.service';
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoardDto } from './dto/update-board.dto';
+import { CreateBoardDto, UpdateBoardDto, AddUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 
@@ -21,7 +21,7 @@ import { Request } from 'express';
   * POST /boards/create-boards
     * authenticated user can only create accounts
     * the user will create the boards
-    ! create the Board_members as well
+    * create the Board_members as well 
   TODO: get all boards 
   ? status - done 
   * GET /boards/get-boards
@@ -34,10 +34,6 @@ import { Request } from 'express';
   ? status - done 
   * GET /boards/owned
     * get the boards of the of the user both owned 
-  TODO: get user's board both owned and joined (might be from Board_members)
-  ? status - ongoing 
-  * GET /boards/users
-    * get the boards both joined and owned by the users
   TODO: Invite Users to the Board_members
   ? status - ongoing 
   * POST /boards/invite
@@ -60,7 +56,6 @@ export class BoardsController {
   @Get('owned')
   getBoardsOfUser(@Req() req: Request) {
     const authenticatedUser = (req.user as any).id;
-    console.log(authenticatedUser);
     return this.boardsService.getBoardsOfUser(authenticatedUser);
   }
 
@@ -82,8 +77,26 @@ export class BoardsController {
     return this.boardsService.createBoards(boardName, boardOwner);
   }
 
-  // POST /boards/invite
-  // id if it should be here tho
+  // POST /boards/:boardId/invite
+  @Post(':boardId/invite')
+  addUsersToTheBoard(
+    @Param('boardId') boardId: string,
+    @Body() addUserDto: AddUserDto,
+    @Req() req: Request,
+  ) {
+    //the user cant ad it self
+    if (addUserDto.email === (req.user as any).email) {
+      console.log('hello');
+      throw new BadRequestException('You cannot add your self');
+    }
+    const payload = {
+      boardId,
+      inviter: (req.user as any).id,
+      email: addUserDto.email,
+      role: addUserDto.role,
+    };
+    return this.boardsService.addMembersToBoard(payload);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {

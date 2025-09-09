@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { BoardsRepository } from './boards.repository';
 
@@ -12,6 +12,16 @@ export class BoardsService {
     );
     return result;
   }
+  async findUser(id: string) {
+    const result = await this.boardsRepository.findUserById(id);
+    if (result === null) {
+      throw new NotFoundException('User not found');
+    }
+    return result;
+  }
+  findUserByEmail(email: string) {
+    return this.boardsRepository.findUserByEmail(email);
+  }
 
   findAll() {
     return this.boardsRepository.findAll();
@@ -23,6 +33,27 @@ export class BoardsService {
 
   getBoardsOfUser(authenticatedUser: string) {
     return this.boardsRepository.getBoardsOfUser(authenticatedUser);
+  }
+
+  async addMembersToBoard(payload: {
+    boardId: string;
+    email: string;
+    role: string;
+    inviter: string;
+  }) {
+    //check if inviter exist
+    const checkUser = await this.findUserByEmail(payload.email);
+    if (checkUser === null) {
+      throw new NotFoundException('User not found');
+    }
+
+    const invitedUser = {
+      boardId: payload.boardId,
+      userId: checkUser.id,
+      role: payload.role,
+    };
+
+    return this.boardsRepository.addMembersToBoard(invitedUser);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
