@@ -35,9 +35,21 @@ import { Request } from 'express';
   * GET /boards/owned
     * get the boards of the of the user both owned 
   TODO: Invite Users to the Board_members
-  ? status - ongoing 
-  * POST /boards/invite
+  ? status - done 
+  * POST /boards/[id]/invite
     * add or invite a users to the board via email
+  TODO: Change Users role in Board_members
+  ? status - ongoing 
+  * POST /boards/[id]/
+    * change the role of a user
+  TODO: update board
+  ? status - ongoing 
+  * PATCH /boards/[id]
+    * update the board name
+  TODO: delete board
+  ? status - ongoing 
+  * DELETE /boards/[id]
+    * Delete Module
 */
 
 @UseGuards(AuthGuard('jwt'))
