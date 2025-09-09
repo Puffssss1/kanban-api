@@ -21,7 +21,7 @@ import { Request } from 'express';
   * POST /boards/create-boards
     * authenticated user can only create accounts
     * the user will create the boards
-    * create the Board_members as well
+    ! create the Board_members as well
   TODO: get all boards 
   ? status - done 
   * GET /boards/get-boards
