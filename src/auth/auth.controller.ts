@@ -3,9 +3,18 @@ import { AuthService } from './auth.service';
 import { SignupDto, AuthDto } from './dto';
 
 /* 
-todo: POST /auth/register create new user
-todo: POST /auth/login login user(return JWT)
-todo: POST /auth/google (OAuth integration)
+  TODO: create new user
+  ? status - done 
+  * POST /auth/register 
+    * register new users
+  TODO: login user
+  ? status - done 
+  * POST /auth/login
+    * validate users creadentials and return JWT token
+  TODO: OAuth integration
+  ? status - ongoing (on hold)
+  * POST /auth/google
+    * login user using google or other providers if possible
 */
 
 @Controller('auth')

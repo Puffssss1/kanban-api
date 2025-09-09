@@ -17,12 +17,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: {
         id: payload.sub,
       },
-      // select: {
-      //   id: true,
-      //   email: true,
-      // },
+      select: {
+        id: true,
+        email: true,
+      },
     });
-    delete user.hashed_password;
+    // delete user.hashed_password;
     if (!user) {
       return null;
     }

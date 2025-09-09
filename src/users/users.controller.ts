@@ -13,6 +13,26 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 
+/*
+  TODO: get authenticated users 
+  ? status - Done 
+  * GET /users/me
+    * get the user from the token
+  TODO: get user by id  
+  ? status - Done 
+  * GET /boards/[id]
+    * get the user by id
+  TODO: Edit users
+  ? status - Done 
+  * PATCH /user/[id]
+    * edit the user using id
+  TODO: Edit users
+  ? status - Done 
+  * DELETE /user/[id]
+    * delete existing user
+*/
+
+@UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -22,7 +42,6 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get('me')
   findMe(@Req() req: Request) {
     return req.user;
