@@ -36,10 +36,13 @@ export class AuthRepository {
   }
 
   async create(data: { email: string; full_name: string; password: string }) {
+    const formatedName = data.full_name
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
     const newUser = await this.dbService.users.create({
       data: {
         email: data.email,
-        full_name: data.full_name,
+        full_name: formatedName,
         hashed_password: data.password,
         updated_at: new Date(),
       },
