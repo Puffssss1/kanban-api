@@ -178,6 +178,6 @@ export class BoardsRepository {
         id: id,
       },
     });
-    return result;
+    return 'successfully deleted' + result;
   }
 }
