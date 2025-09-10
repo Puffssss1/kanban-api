@@ -39,16 +39,16 @@ import { Request } from 'express';
   * POST /boards/[id]/invite
     * add or invite a users to the board via email
   TODO: Change Users role in Board_members
-  ? status - ongoing 
+  ? status - done 
   * POST /boards/[id]/
     * change the role of a user
   TODO: update board
-  ? status - ongoing 
+  ? status - done 
   * PATCH /boards/[id]/update
     * update the board name
   TODO: delete board
-  ? status - ongoing 
-  * DELETE /boards/[id]
+  ? status - done 
+  * DELETE /boards/[id]/delete
     * Delete Module
 */
 
@@ -123,6 +123,7 @@ export class BoardsController {
     return this.boardsService.updateRole(boardId, updatedRole);
   }
 
+  // DELETE /boards/:boardId/delete
   @Delete(':id/delete')
   remove(@Param('id') id: string) {
     return this.boardsService.remove(id);
