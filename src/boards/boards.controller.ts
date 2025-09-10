@@ -44,7 +44,7 @@ import { Request } from 'express';
     * change the role of a user
   TODO: update board
   ? status - ongoing 
-  * PATCH /boards/[id]
+  * PATCH /boards/[id]/update
     * update the board name
   TODO: delete board
   ? status - ongoing 
@@ -110,13 +110,21 @@ export class BoardsController {
     return this.boardsService.addMembersToBoard(payload);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-    return this.boardsService.update(+id, updateBoardDto);
+  //PATCH /boards/:boardId/update
+  @Patch(':id/update')
+  updateRole(
+    @Param('id') boardId: string,
+    @Body() updateBoardDto: UpdateBoardDto,
+  ) {
+    const updatedRole = {
+      email: updateBoardDto.email,
+      role: updateBoardDto.role,
+    };
+    return this.boardsService.updateRole(boardId, updatedRole);
   }
 
-  @Delete(':id')
+  @Delete(':id/delete')
   remove(@Param('id') id: string) {
-    return this.boardsService.remove(+id);
+    return this.boardsService.remove(id);
   }
 }

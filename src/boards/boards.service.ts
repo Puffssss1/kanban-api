@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateBoardDto } from './dto/update-board.dto';
 import { BoardsRepository } from './boards.repository';
 
 @Injectable()
@@ -56,12 +55,31 @@ export class BoardsService {
     return this.boardsRepository.addMembersToBoard(invitedUser);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  update(id: number, updateBoardDto: UpdateBoardDto) {
-    return `This action updates a #${id} board`;
+  async updateRole(
+    boardId: string,
+    updatedRole: { email: string; role: string },
+  ) {
+    const checkUser = await this.findUserByEmail(updatedRole.email);
+    if (checkUser === null) {
+      throw new NotFoundException('User not found');
+    }
+    const checkBoard = await this.findOne(boardId);
+    if (checkBoard === null) {
+      throw new NotFoundException('Board not found');
+    }
+    const newUpdatedData = {
+      boardId: boardId,
+      userId: checkUser.id,
+      newUserRole: updatedRole.role,
+    };
+    return this.boardsRepository.updateRole(newUpdatedData);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} board`;
+  remove(id: string) {
+    const checkBoard = this.findOne(id);
+    if (!checkBoard) {
+      throw new NotFoundException('Board Not Found');
+    }
+    return this.boardsRepository.remove(id);
   }
 }

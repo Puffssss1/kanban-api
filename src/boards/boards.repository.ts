@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
@@ -123,6 +124,58 @@ export class BoardsRepository {
         board_id: invitedUser.boardId,
         user_id: invitedUser.userId,
         role: invitedUser.role as Role,
+      },
+    });
+    return result;
+  }
+
+  async updateRole(newUpdatedData: {
+    boardId: string;
+    userId: string;
+    newUserRole: string;
+  }) {
+    const checkBoardIdAndUserId = await this.dbService.board_members.findUnique(
+      {
+        where: {
+          board_id_user_id: {
+            board_id: newUpdatedData.boardId,
+            user_id: newUpdatedData.userId,
+          },
+        },
+      },
+    );
+
+    //check if the user and board is exisitgn
+    if (!checkBoardIdAndUserId) {
+      throw new NotFoundException('The board or User might not exist');
+    }
+
+    //check if the user already have the role
+    if (checkBoardIdAndUserId.role === newUpdatedData.newUserRole) {
+      throw new NotAcceptableException(
+        `The role is already set to ${newUpdatedData.newUserRole}`,
+      );
+    }
+
+    //save the updated role
+    const result = this.dbService.board_members.update({
+      where: {
+        board_id_user_id: {
+          board_id: newUpdatedData.boardId,
+          user_id: newUpdatedData.userId,
+        },
+      },
+      data: {
+        role: newUpdatedData.newUserRole as Role,
+      },
+    });
+    return result;
+  }
+
+  async remove(id: string) {
+    const result = await this.dbService.boards.delete({
+      where: {
+        id: id,
       },
     });
     return result;

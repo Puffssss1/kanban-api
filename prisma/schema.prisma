@@ -53,7 +53,7 @@ model Board_members {
   board_id String
   user_id  String
   role     Role?  @default(VIEWER)
-  board    Boards @relation(fields: [board_id], references: [id])
+  board    Boards @relation(fields: [board_id], references: [id], onDelete: Cascade )
   user     Users  @relation(fields: [user_id], references: [id])
 
   @@unique([board_id, user_id])
