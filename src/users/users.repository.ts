@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
@@ -36,12 +36,9 @@ export class UsersRepository {
           avatar_url: true,
         },
       });
-      if (!user) {
-        throw new NotFoundException(`user: ${id} not found`);
-      }
       return user;
     } catch (error) {
-      throw new NotFoundException(`user: ${id} not found`);
+      return null;
     }
   }
 

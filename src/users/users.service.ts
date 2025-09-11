@@ -11,6 +11,9 @@ export class UsersService {
 
   findOne(id: string) {
     const user = this.userRepository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`user: ${id} not found`);
+    }
     return user;
   }
 

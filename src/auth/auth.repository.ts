@@ -70,10 +70,6 @@ export class AuthRepository {
         hashed_password: true,
       },
     });
-    // if user not exist throw error
-    if (!getUser) {
-      throw new NotFoundException('Account not found');
-    }
     // if user exist verify password
     const passwordMatches = await argon.verify(
       getUser.hashed_password,

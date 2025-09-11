@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotAcceptableException,
   NotFoundException,
@@ -10,6 +9,33 @@ import { Role } from './enums';
 @Injectable()
 export class BoardsRepository {
   constructor(private dbService: DatabaseService) {}
+
+  //create boards
+  async createBoards(boardName: string, boardOwner: string) {
+    //check if the user exist
+    const checkUserID = await this.findUserById(boardOwner);
+    if (checkUserID === null) {
+      throw new NotFoundException('There is no User');
+    }
+
+    // create the board
+    const board = await this.dbService.boards.create({
+      data: {
+        owner_id: boardOwner,
+        board_name: boardName,
+        updated_at: new Date(),
+        // create the board_members
+        BoardMembers: {
+          create: {
+            user_id: boardOwner,
+            role: 'EDITOR',
+          },
+        },
+      },
+      include: { BoardMembers: true },
+    });
+    return board;
+  }
 
   //find user by id
   async findUserById(id: string) {
@@ -48,33 +74,6 @@ export class BoardsRepository {
     return this.dbService.boards.findMany({ include: { BoardMembers: true } });
   }
 
-  //create boards
-  async createBoards(boardName: string, boardOwner: string) {
-    //check if the user exist
-    const checkUserID = await this.findUserById(boardOwner);
-    if (checkUserID === null) {
-      throw new NotFoundException('There is no User');
-    }
-
-    // create the board
-    const board = await this.dbService.boards.create({
-      data: {
-        owner_id: boardOwner,
-        board_name: boardName,
-        updated_at: new Date(),
-        // create the board_members
-        BoardMembers: {
-          create: {
-            user_id: boardOwner,
-            role: 'EDITOR',
-          },
-        },
-      },
-      include: { BoardMembers: true },
-    });
-    return board;
-  }
-
   // get boards by id
   async findOne(id: string) {
     const result = await this.dbService.boards.findUnique({
@@ -83,9 +82,6 @@ export class BoardsRepository {
       },
       include: { BoardMembers: true },
     });
-    if (!result) {
-      throw new NotFoundException(`board: ${id} not found`);
-    }
     return result;
   }
 
@@ -97,9 +93,6 @@ export class BoardsRepository {
       },
       include: { BoardMembers: true },
     });
-    if (!result) {
-      throw new BadRequestException('User is not Logged in');
-    }
     return result;
   }
 
@@ -178,6 +171,6 @@ export class BoardsRepository {
         id: id,
       },
     });
-    return 'successfully deleted' + result;
+    return result;
   }
 }

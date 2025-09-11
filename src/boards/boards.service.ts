@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { BoardsRepository } from './boards.repository';
 
 @Injectable()
 export class BoardsService {
   constructor(private boardsRepository: BoardsRepository) {}
+
   async createBoards(boardName: string, boardOwner: string) {
     const result = await this.boardsRepository.createBoards(
       boardName,
@@ -11,6 +16,7 @@ export class BoardsService {
     );
     return result;
   }
+
   async findUser(id: string) {
     const result = await this.boardsRepository.findUserById(id);
     if (result === null) {
@@ -18,20 +24,33 @@ export class BoardsService {
     }
     return result;
   }
-  findUserByEmail(email: string) {
-    return this.boardsRepository.findUserByEmail(email);
+
+  async findUserByEmail(email: string) {
+    const result = await this.boardsRepository.findUserByEmail(email);
+    if (!result) {
+      throw new NotFoundException('Email not found');
+    }
+    return result;
   }
 
   findAll() {
     return this.boardsRepository.findAll();
   }
 
-  findOne(id: string) {
-    return this.boardsRepository.findOne(id);
+  async findOne(id: string) {
+    const result = await this.boardsRepository.findOne(id);
+    if (!result) {
+      throw new NotFoundException(`board: ${id} not found`);
+    }
+    return result;
   }
 
   getBoardsOfUser(authenticatedUser: string) {
-    return this.boardsRepository.getBoardsOfUser(authenticatedUser);
+    const result = this.boardsRepository.getBoardsOfUser(authenticatedUser);
+    if (!result) {
+      throw new BadRequestException('User is not Logged in');
+    }
+    return result;
   }
 
   async addMembersToBoard(payload: {
@@ -42,9 +61,6 @@ export class BoardsService {
   }) {
     //check if inviter exist
     const checkUser = await this.findUserByEmail(payload.email);
-    if (checkUser === null) {
-      throw new NotFoundException('User not found');
-    }
 
     const invitedUser = {
       boardId: payload.boardId,
@@ -60,13 +76,7 @@ export class BoardsService {
     updatedRole: { email: string; role: string },
   ) {
     const checkUser = await this.findUserByEmail(updatedRole.email);
-    if (checkUser === null) {
-      throw new NotFoundException('User not found');
-    }
-    const checkBoard = await this.findOne(boardId);
-    if (checkBoard === null) {
-      throw new NotFoundException('Board not found');
-    }
+
     const newUpdatedData = {
       boardId: boardId,
       userId: checkUser.id,
@@ -80,6 +90,9 @@ export class BoardsService {
     if (!checkBoard) {
       throw new NotFoundException('Board Not Found');
     }
-    return this.boardsRepository.remove(id);
+    const result = this.boardsRepository.remove(id);
+    return {
+      message: `board: ${id}` + result + 'deleted',
+    };
   }
 }

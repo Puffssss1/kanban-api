@@ -15,12 +15,13 @@ export class AuthService {
     private readonly authRepository: AuthRepository,
     private jwtService: JwtService,
   ) {}
-  findAll() {
-    return `This action returns all auth`;
-  }
 
-  findByEmail(data: string) {
-    return this.authRepository.findByEmail(data);
+  async findByEmail(data: string) {
+    const result = await this.authRepository.findByEmail(data);
+    if (result === null) {
+      throw new NotFoundException('Email not found');
+    }
+    return result;
   }
 
   async generateToken(userId: string, email: string) {
@@ -63,11 +64,7 @@ export class AuthService {
 
   async login(loginCreadentials: { email: string; password: string }) {
     //get user by email
-    const user = await this.findByEmail(loginCreadentials.email);
-    // if user not exist throw no user found
-    if (!user) {
-      throw new NotFoundException('Account not found');
-    }
+    await this.findByEmail(loginCreadentials.email);
     const result = await this.authRepository.login(loginCreadentials);
     // return JWTtoken
     const token = await this.generateToken(result.id, result.email);
