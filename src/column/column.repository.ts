@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class ColumnRepository {
-  constructor(private dbSerice: DatabaseService) {}
+  constructor(private dbService: DatabaseService) {}
 
   //findUser by id
   async findUser(id: string) {
-    const result = await this.dbSerice.users.findUnique({
+    const result = await this.dbService.users.findUnique({
       where: { id },
       select: {
         id: true,
@@ -17,7 +17,7 @@ export class ColumnRepository {
   }
   //findBoard by id
   async findBoard(id: string) {
-    const result = await this.dbSerice.boards.findUnique({
+    const result = await this.dbService.boards.findUnique({
       where: {
         id,
       },
@@ -28,14 +28,53 @@ export class ColumnRepository {
     return result;
   }
 
-  // Post Crete Columns
+  // Post Crete Column
+  async createColumn(columnData: {
+    boardId: string;
+    userId: string;
+    columnTitle: string;
+    columnDescription: string;
+  }) {
+    // check if the user is a member of the board
+    const isMember = await this.dbService.board_members.findFirst({
+      where: {
+        board_id: columnData.boardId,
+        user_id: columnData.userId,
+      },
+    });
+    if (!isMember) {
+      throw new ForbiddenException('You are not not a member of the board');
+    }
+
+    // get the current higheest position
+    const lastColumn = await this.dbService.columns.findFirst({
+      where: { board_id: columnData.boardId },
+      orderBy: { position: 'desc' },
+    });
+    const nextColumn = lastColumn ? lastColumn.position + 1 : 1;
+
+    // save data
+    const result = await this.dbService.columns.create({
+      data: {
+        column_title: columnData.columnTitle,
+        description: columnData.columnDescription,
+        position: nextColumn,
+        board: {
+          connect: {
+            id: columnData.boardId,
+          },
+        },
+      },
+    });
+    return result;
+  }
 
   // boardId
   // userId
   // column
   // Get all the column for a user and include task
   async findAllColumn(boardId: string, userId: string, includeTask: boolean) {
-    const result = await this.dbSerice.columns.findMany({
+    const result = await this.dbService.columns.findMany({
       where: {
         board_id: boardId,
         board: {

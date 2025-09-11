@@ -30,9 +30,11 @@ export class ColumnService {
     columnDescription: string;
   }) {
     // check the user if exist
+    this.findUser(columnData.userId);
     // check the board if it exist
+    this.findBoard(columnData.boardId);
     // save the data
-    return 'This action adds a new column';
+    return this.columnRepository.createColumn(columnData);
   }
 
   // get all the column for a user and include task
