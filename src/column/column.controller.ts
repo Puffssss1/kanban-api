@@ -16,11 +16,11 @@ import { Request } from 'express';
 
 /*
 TODO create a column in a specific board
-? status - ongoing
+? status - done
 * POST /boards/:boardId/columns
 * create a column for a specific board
 TODO get column for a user
-? status - ongoing
+? status - done
 * GET /boards/:boardId/columns
 * get all the column in a specific board from a user
 TODO get a single column by id
