@@ -6,7 +6,13 @@ import { BoardsModule } from './boards/boards.module';
 import { ColumnModule } from './column/column.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, DatabaseModule, BoardsModule, ColumnModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    DatabaseModule,
+    BoardsModule,
+    ColumnModule,
+  ],
   controllers: [],
   providers: [],
 })
