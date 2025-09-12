@@ -11,7 +11,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { AuthenticatedRequest } from 'src/common/types/authenticated-request.interface';
 
 /*
   TODO: get authenticated users 
@@ -43,7 +43,7 @@ export class UsersController {
   }
 
   @Get('me')
-  findMe(@Req() req: Request) {
+  findMe(@Req() req: AuthenticatedRequest) {
     return req.user;
   }
 

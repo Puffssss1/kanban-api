@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { SignupDto } from './dto';
@@ -18,9 +17,6 @@ export class AuthService {
 
   async findByEmail(data: string) {
     const result = await this.authRepository.findByEmail(data);
-    if (result === null) {
-      throw new NotFoundException('Email not found');
-    }
     return result;
   }
 

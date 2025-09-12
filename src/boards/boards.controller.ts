@@ -14,6 +14,7 @@ import { BoardsService } from './boards.service';
 import { CreateBoardDto, UpdateBoardDto, AddUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { AuthenticatedRequest } from 'src/common/types/authenticated-request.interface';
 
 /*
   TODO: create boards 
@@ -66,8 +67,8 @@ export class BoardsController {
   // Get boards of the users
   // GET /boards/owned
   @Get('owned')
-  getBoardsOfUser(@Req() req: Request) {
-    const authenticatedUser = (req.user as any).id;
+  getBoardsOfUser(@Req() req: AuthenticatedRequest) {
+    const authenticatedUser = req.user.id;
     return this.boardsService.getBoardsOfUser(authenticatedUser);
   }
 
@@ -82,10 +83,10 @@ export class BoardsController {
   @Post('create-boards')
   async createBoards(
     @Body() createBoardDto: CreateBoardDto,
-    @Req() req: Request,
+    @Req() req: AuthenticatedRequest,
   ) {
     const boardName = createBoardDto.board_name;
-    const boardOwner = await (req.user as any).id;
+    const boardOwner = await req.user.id;
     return this.boardsService.createBoards(boardName, boardOwner);
   }
 
@@ -94,7 +95,7 @@ export class BoardsController {
   addUsersToTheBoard(
     @Param('boardId') boardId: string,
     @Body() addUserDto: AddUserDto,
-    @Req() req: Request,
+    @Req() req: AuthenticatedRequest,
   ) {
     //the user cant ad it self
     if (addUserDto.email === (req.user as any).email) {
@@ -103,7 +104,7 @@ export class BoardsController {
     }
     const payload = {
       boardId,
-      inviter: (req.user as any).id,
+      inviter: req.user.id,
       email: addUserDto.email,
       role: addUserDto.role,
     };

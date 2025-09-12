@@ -8,11 +8,12 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ColumnService } from './column.service';
-import { CreateColumnDto } from './dto/create-column.dto';
-import { UpdateColumnDto } from './dto/update-column.dto';
-import { Request } from 'express';
+import { CreateColumnDto, UpdateColumnDto } from './dto';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthenticatedRequest } from 'src/common/types/authenticated-request.interface';
 
 /*
 TODO create a column in a specific board
@@ -24,9 +25,9 @@ TODO get column for a user
 * GET /boards/:boardId/columns
 * get all the column in a specific board from a user
 TODO get a single column by id
-? status - ongoing
+? status - done
 * GET /boards/:boardId/columns/:columnId
-* get a column by ID from a board
+* get a column by ID from a board user should be a member of thee board
 TODO Edit a column
 ? status - ongoing
 * PATCH /boards/:boardId/columns/:columnId
@@ -37,6 +38,7 @@ TODO Delete column
 * delete a column
 */
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('boards/:boardId/columns')
 export class ColumnController {
   constructor(private readonly columnService: ColumnService) {}
@@ -45,13 +47,13 @@ export class ColumnController {
   // Create columns
   @Post()
   createColumn(
-    @Param('id') boardId: string,
+    @Param('boardId') boardId: string,
     @Body() createColumnDto: CreateColumnDto,
-    @Req() req: Request,
+    @Req() req: AuthenticatedRequest,
   ) {
     const columnData = {
       boardId: boardId,
-      userId: (req.user as any).id,
+      userId: req.user.id,
       columnTitle: createColumnDto.title,
       columnDescription: createColumnDto.description,
     };
@@ -62,25 +64,42 @@ export class ColumnController {
   // get all the column in a specific board from a user
   @Get()
   findAllColumn(
-    @Param('id') boardId: string,
-    @Req() req: Request,
+    @Param('boardId') boardId: string,
+    @Req() req: AuthenticatedRequest,
     @Query('includeTasks') includeTask: string,
   ) {
-    const userId = (req.user as any).id;
+    const userId = req.user.id;
     const includeTaskFlag = includeTask === 'true';
     return this.columnService.findAllColumn(boardId, userId, includeTaskFlag);
   }
 
   // GET /boards/:boardId/columns/:columnId
   @Get(':columnId')
-  findOne(@Param('id') id: string) {
-    return this.columnService.findOne(+id);
+  findColumnById(
+    @Param('boardId') boardId: string,
+    @Param('columnId') columnId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const userId = req.user.id;
+    return this.columnService.findColumnById(boardId, columnId, userId);
   }
 
   // PATCH /boards/:boardId/columns/:columnId
   @Patch(':columnId')
-  update(@Param('id') id: string, @Body() updateColumnDto: UpdateColumnDto) {
-    return this.columnService.update(+id);
+  updateColumn(
+    @Param('boardId') boardId: string,
+    @Param('columnId') columnId: string,
+    @Body() updateColumnDto: UpdateColumnDto,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const columnData = {
+      boardId: boardId,
+      userId: req.user.id,
+      columnId: columnId,
+      title: updateColumnDto.title,
+      description: updateColumnDto.description,
+    };
+    return this.columnService.updateColumn(columnData);
   }
 
   // DELETE /boards/:boardId/columns/:columnId

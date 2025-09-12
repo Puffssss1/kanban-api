@@ -59,6 +59,9 @@ export class BoardsService {
     role: string;
     inviter: string;
   }) {
+    /*
+    ! need to adjust validation the owner or a member of the board is the one who will be able to invite
+    */
     //check if inviter exist
     const checkUser = await this.findUserByEmail(payload.email);
 
