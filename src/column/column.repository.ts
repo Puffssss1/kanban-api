@@ -111,4 +111,12 @@ export class ColumnRepository {
     });
     return result;
   }
+  async removeColumn(columnId: string) {
+    const result = await this.dbService.columns.delete({
+      where: {
+        id: columnId,
+      },
+    });
+    return result;
+  }
 }

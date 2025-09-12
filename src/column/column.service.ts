@@ -109,7 +109,17 @@ export class ColumnService {
     return this.columnRepository.updateColumn(updatedData);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} column`;
+  async removeColumn(boardId: string, columnId: string, userId: string) {
+    // check if the user exist
+    await this.findUser(userId);
+    // check if the board exist
+    await this.findBoard(boardId);
+    // check if the user is in the board
+    const membership = await this.boardMembership(boardId, userId);
+    // check if the user is an editor
+    if (membership.role === 'VIEWER') {
+      throw new ForbiddenException('You are not an editor of the board');
+    }
+    return this.columnRepository.removeColumn(columnId);
   }
 }

@@ -104,7 +104,11 @@ export class ColumnController {
 
   // DELETE /boards/:boardId/columns/:columnId
   @Delete(':columnId')
-  remove(@Param('id') id: string) {
-    return this.columnService.remove(+id);
+  removeColumn(
+    @Param('boardId') boardId: string,
+    @Param('columnId') columnId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.columnService.removeColumn(boardId, columnId, req.user.id);
   }
 }
