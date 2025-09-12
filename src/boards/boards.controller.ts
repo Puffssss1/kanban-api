@@ -13,7 +13,6 @@ import {
 import { BoardsService } from './boards.service';
 import { CreateBoardDto, UpdateBoardDto, AddUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
 import { AuthenticatedRequest } from 'src/common/types/authenticated-request.interface';
 
 /*
@@ -86,7 +85,7 @@ export class BoardsController {
     @Req() req: AuthenticatedRequest,
   ) {
     const boardName = createBoardDto.board_name;
-    const boardOwner = await req.user.id;
+    const boardOwner = req.user.id;
     return this.boardsService.createBoards(boardName, boardOwner);
   }
 

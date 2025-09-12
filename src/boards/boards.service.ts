@@ -88,11 +88,8 @@ export class BoardsService {
     return this.boardsRepository.updateRole(newUpdatedData);
   }
 
-  remove(id: string) {
-    const checkBoard = this.findOne(id);
-    if (!checkBoard) {
-      throw new NotFoundException('Board Not Found');
-    }
+  async remove(id: string) {
+    await this.findOne(id);
     const result = this.boardsRepository.remove(id);
     return {
       message: `board: ${id}` + result + 'deleted',
