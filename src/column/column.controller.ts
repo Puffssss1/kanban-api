@@ -29,11 +29,11 @@ TODO get a single column by id
 * GET /boards/:boardId/columns/:columnId
 * get a column by ID from a board user should be a member of thee board
 TODO Edit a column
-? status - ongoing
+? status - done
 * PATCH /boards/:boardId/columns/:columnId
 * edit a board 
 TODO Delete column
-? status - ongoing
+? status - done
 * DELETE /boards/:boardId/columns/:columnId
 * delete a column
 */
