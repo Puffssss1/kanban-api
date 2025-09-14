@@ -33,6 +33,14 @@ export class BoardsService {
     return result;
   }
 
+  async membership(boardId: string, userId: string) {
+    const result = await this.boardsRepository.membership(boardId, userId);
+    if (!result) {
+      throw new BadRequestException('You are not a member of the board');
+    }
+    return result;
+  }
+
   findAll() {
     return this.boardsRepository.findAll();
   }
@@ -64,6 +72,9 @@ export class BoardsService {
     */
     //check if inviter exist
     const checkUser = await this.findUserByEmail(payload.email);
+
+    // check if the initer is a member of the board
+    await this.membership(payload.boardId, checkUser.id);
 
     const invitedUser = {
       boardId: payload.boardId,

@@ -97,8 +97,7 @@ export class BoardsController {
     @Req() req: AuthenticatedRequest,
   ) {
     //the user cant ad it self
-    if (addUserDto.email === (req.user as any).email) {
-      console.log('hello');
+    if (addUserDto.email === req.user.email) {
       throw new BadRequestException('You cannot add your self');
     }
     const payload = {

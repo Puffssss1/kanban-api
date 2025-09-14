@@ -85,6 +85,17 @@ export class BoardsRepository {
     return result;
   }
 
+  // check board_members
+  async membership(boardId: string, userId: string) {
+    const result = await this.dbService.board_members.findFirst({
+      where: {
+        board_id: boardId,
+        user_id: userId,
+      },
+    });
+    return result;
+  }
+
   //get the created boards of a user
   async getBoardsOfUser(authenticatedUser: string) {
     const result = await this.dbService.boards.findMany({
