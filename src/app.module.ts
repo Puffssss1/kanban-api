@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { BoardsModule } from './boards/boards.module';
 import { ColumnModule } from './column/column.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ColumnModule } from './column/column.module';
     DatabaseModule,
     BoardsModule,
     ColumnModule,
+    TaskModule,
   ],
   controllers: [],
   providers: [],
