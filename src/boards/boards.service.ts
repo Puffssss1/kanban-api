@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -36,7 +37,7 @@ export class BoardsService {
   async membership(boardId: string, userId: string) {
     const result = await this.boardsRepository.membership(boardId, userId);
     if (!result) {
-      throw new BadRequestException('You are not a member of the board');
+      throw new ForbiddenException('You are not a member of the board');
     }
     return result;
   }
@@ -69,12 +70,18 @@ export class BoardsService {
   }) {
     /*
     ! need to adjust validation the owner or a member of the board is the one who will be able to invite
+    * adjustment validation status - done
     */
     //check if inviter exist
     const checkUser = await this.findUserByEmail(payload.email);
 
-    // check if the initer is a member of the board
-    await this.membership(payload.boardId, checkUser.id);
+    // check if the inviter is a member of the board
+    const boardMember = await this.membership(payload.boardId, checkUser.id);
+
+    // check if the user is an editor
+    if (boardMember.role === 'VIEWER') {
+      throw new ForbiddenException('You are not an editor of this board');
+    }
 
     const invitedUser = {
       boardId: payload.boardId,
