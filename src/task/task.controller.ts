@@ -1,7 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+
+/*
+TODO create a task
+* POST /boards/:boardId/columns/:columnId/tasks
+? status - not yet started
+  * create a task
+  * assign the task to a user via email
+  * add what severity/Priority: LOW | MEDIUM | HIGH | CRITICAL
+TODO GET task from a board
+* GET /boards/:boardId/tasks
+? status - not yet started
+* Get all tasks in a board.
+TODO GET the task from a board
+* GET /boards/:boardId/columns/:columnId?includeTasks=true
+? status done
+* Get tasks in column. (already have this from column by query param includeTask = true)
+TODO Get single task.
+* GET /boards/:boardId/tasks/:taskId
+? status not yet started
+* Get single task.
+TODO Update the task
+* PATCH /boards/:boardId/tasks/:taskId
+? status not yet started
+* Update task (title, description, assignee, severity, due date).
+TODO move a task to a different column
+* PATCH /boards/:boardId/tasks/:taskId/move 
+? status not yet started
+* Move task to another column.
+TODO delete task
+* DELETE /boards/:boardId/tasks/:taskId 
+? status not yet started
+* Delete task.
+*/
 
 @Controller('task')
 export class TaskController {
