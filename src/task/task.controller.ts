@@ -6,10 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { CreateTaskDto } from './dto/create-task.dto';
-import { UpdateTaskDto } from './dto/update-task.dto';
+import { CreateTaskDto, UpdateTaskDto } from './dto';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthenticatedRequest } from 'src/common/types';
 
 /*
 TODO create a task
@@ -44,13 +47,28 @@ TODO delete task
 * Delete task.
 */
 
-@Controller('task')
+@UseGuards(AuthGuard('jwt'))
+@Controller('/boards/:boardId')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
-  @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  // Create task
+  @Post('columns/:columnId/tasks')
+  create(
+    @Param('boardId') boardId: string,
+    @Req() userId: AuthenticatedRequest,
+    @Body() createTaskDto: CreateTaskDto,
+  ) {
+    const payload = {
+      boardId,
+      userId,
+      assignedTo: createTaskDto.assignedTo,
+      deadline: new Date().toString(),
+      taskTitle: createTaskDto.taskTitle,
+      description: createTaskDto.description,
+      priority: createTaskDto.priority,
+    };
+    return this.taskService.create(payload);
   }
 
   @Get()
