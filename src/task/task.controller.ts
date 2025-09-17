@@ -10,7 +10,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { CreateTaskDto, UpdateTaskDto } from './dto';
+import { CreateTaskDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthenticatedRequest } from 'src/common/types';
 
@@ -54,21 +54,23 @@ export class TaskController {
 
   // Create task
   @Post('columns/:columnId/tasks')
-  create(
+  createTask(
     @Param('boardId') boardId: string,
-    @Req() userId: AuthenticatedRequest,
+    @Param('columnId') columnId: string,
+    @Req() req: AuthenticatedRequest,
     @Body() createTaskDto: CreateTaskDto,
   ) {
     const payload = {
       boardId,
-      userId,
+      columnId,
+      userId: req.user.id,
       assignedTo: createTaskDto.assignedTo,
-      deadline: new Date().toString(),
+      deadline: createTaskDto.deadline,
       taskTitle: createTaskDto.taskTitle,
       description: createTaskDto.description,
       priority: createTaskDto.priority,
     };
-    return this.taskService.create(payload);
+    return this.taskService.createTask(payload);
   }
 
   @Get()
@@ -82,8 +84,8 @@ export class TaskController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+  update(@Param('id') id: string) {
+    return this.taskService.update(+id);
   }
 
   @Delete(':id')

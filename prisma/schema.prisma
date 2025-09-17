@@ -119,7 +119,8 @@ enum Role {
 /// created_at timestamptz
 /// updated_at timestamptz
 enum Priority {
-  HIGH
   LOW
-  ASAP
+  MEDIUM
+  HIGH
+  CRITICAL
 }
