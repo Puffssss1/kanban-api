@@ -17,13 +17,13 @@ import { AuthenticatedRequest } from 'src/common/types';
 /*
 TODO create a task
 * POST /boards/:boardId/columns/:columnId/tasks
-? status - not yet started
+? status - done
   * create a task
   * assign the task to a user via email
   * add what severity/Priority: LOW | MEDIUM | HIGH | CRITICAL
 TODO GET task from a board
 * GET /boards/:boardId/tasks
-? status - not yet started
+? status - ongoing
 * Get all tasks in a board.
 TODO GET the task from a board
 * GET /boards/:boardId/columns/:columnId?includeTasks=true
