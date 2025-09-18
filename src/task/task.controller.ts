@@ -31,7 +31,7 @@ TODO GET the task from a board
 * Get tasks in column. (already have this from column by query param includeTask = true)
 TODO Get single task.
 * GET /boards/:boardId/tasks/:taskId
-? status not yet started
+? status ongoing
 * Get single task.
 TODO Update the task
 * PATCH /boards/:boardId/tasks/:taskId
