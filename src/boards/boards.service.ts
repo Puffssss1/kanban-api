@@ -76,7 +76,7 @@ export class BoardsService {
     const checkUser = await this.findUserByEmail(payload.email);
 
     // check if the inviter is a member of the board
-    const boardMember = await this.membership(payload.boardId, checkUser.id);
+    const boardMember = await this.membership(payload.boardId, payload.inviter);
 
     // check if the user is an editor
     if (boardMember.role === 'VIEWER') {

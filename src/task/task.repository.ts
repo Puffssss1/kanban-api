@@ -82,4 +82,9 @@ export class TaskRepository {
     });
     return result;
   }
+
+  async findAll(boardId: string, userId: string) {
+    const result = await this.dbService.task_box.findMany();
+    return result;
+  }
 }

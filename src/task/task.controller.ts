@@ -23,7 +23,7 @@ TODO create a task
   * add what severity/Priority: LOW | MEDIUM | HIGH | CRITICAL
 TODO GET task from a board
 * GET /boards/:boardId/tasks
-? status - ongoing
+! status - on hold
 * Get all tasks in a board.
 TODO GET the task from a board
 * GET /boards/:boardId/columns/:columnId?includeTasks=true
@@ -73,14 +73,18 @@ export class TaskController {
     return this.taskService.createTask(payload);
   }
 
-  @Get()
-  findAll() {
-    return this.taskService.findAll();
+  @Get('/tasks')
+  findAll(@Param('boardId') boardId: string, @Req() req: AuthenticatedRequest) {
+    return this.taskService.findAll(boardId, req.user.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+  @Get('tasks/:taskId')
+  findOneTask(
+    @Param('boardId') boardId: string,
+    @Param('taskId') taskId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.taskService.findOneTask(boardId, taskId, req.user.id);
   }
 
   @Patch(':id')

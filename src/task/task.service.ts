@@ -89,12 +89,16 @@ export class TaskService {
     return this.taskRepository.createTask(taskData);
   }
 
-  findAll() {
-    return `This action returns all task`;
+  async findAll(boardId: string, userId: string) {
+    // check if board exist
+    await this.findBoard(boardId);
+    // check if user exist
+    await this.findUserById(userId);
+    return this.taskRepository.findAll(boardId, userId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  findOneTask(boardId: string, taskId: string, userId: string) {
+    return `This action returns a #${boardId + taskId + userId} task`;
   }
 
   update(id: number) {
