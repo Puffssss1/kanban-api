@@ -16,6 +16,11 @@ export class TaskService {
   check if the user is an editor
   check if the assignee is an editor
   */
+
+  /*
+  have to add when a board is created there will be 3 columns Not started, Ongoing, Done, 
+  and the position will 3 not until the column is added to the board
+  */
   async findUserById(userId: string) {
     const result = await this.taskRepository.findUserById(userId);
     if (!result) {
