@@ -45,6 +45,14 @@ export class TaskService {
     return result;
   }
 
+  async checkColumn(boardId: string, columnId: string) {
+    const result = await this.taskRepository.checkColumn(boardId, columnId);
+    if (!result) {
+      throw new ForbiddenException('The board and column doesnt Match');
+    }
+    return result;
+  }
+
   async createTask(payload: {
     boardId: string;
     columnId: string;
@@ -59,6 +67,8 @@ export class TaskService {
     await this.findUserById(payload.userId);
     // check if the board is existing
     await this.findBoard(payload.boardId);
+    // check if the column is in the right board
+    await this.checkColumn(payload.boardId, payload.columnId);
     // check if the user is a member of the board
     const userMembership = await this.membership(
       payload.boardId,

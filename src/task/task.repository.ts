@@ -50,6 +50,19 @@ export class TaskRepository {
     return result;
   }
 
+  async checkColumn(boardId: string, columnId: string) {
+    const result = await this.dbService.columns.findFirst({
+      where: {
+        id: columnId,
+        board_id: boardId,
+      },
+      select: {
+        id: true,
+      },
+    });
+    return result;
+  }
+
   // create task
   async createTask(taskData: {
     columnId: string;
